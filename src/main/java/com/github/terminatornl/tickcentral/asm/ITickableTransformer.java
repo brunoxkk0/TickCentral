@@ -43,9 +43,10 @@ public class ITickableTransformer implements IClassTransformer {
 			if (basicClass == null) {
 				return null;
 			}
+
 			ClassReader reader = new ClassReader(basicClass);
 
-			if (ClassSniffer.isInstanceOf(reader, INTERFACE_CLASS_OBF) == false) {
+			if (ClassSniffer.hasMixinAnnotation(reader) || !ClassSniffer.isInstanceOf(reader, INTERFACE_CLASS_OBF)) {
 				return basicClass;
 			}
 

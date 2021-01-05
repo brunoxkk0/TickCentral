@@ -105,15 +105,7 @@ public class ClassSniffer {
 			} else {
 				ClassReader superReader = new ClassReader(superClass);
 				if (disallowMixinSupers) {
-					ClassNode superClassNode = new ClassNode();
-					superReader.accept(superClassNode, 0);
-					if (superClassNode.invisibleAnnotations != null) {
-						for (AnnotationNode annotation : superClassNode.invisibleAnnotations) {
-							if (annotation.desc.equals("Lorg/spongepowered/asm/mixin/Mixin;")) {
-								return false;
-							}
-						}
-					}
+					if(hasMixinAnnotation(reader)) return false;
 				}
 				if (isInstanceOf(superReader, obfuscated, disallowMixinSupers)) {
 					addKnownImplementor(className, obfuscated);
@@ -169,7 +161,24 @@ public class ClassSniffer {
 	}
 
 
+	public static boolean hasMixinAnnotation(ClassReader classReader) {
+		ClassNode classNode = new ClassNode();
+		classReader.accept(classNode, 0);
+		return hasMixinAnnotation(classNode);
+	}
 
+	private static boolean hasMixinAnnotation(ClassNode classNode) {
+
+		if (classNode.invisibleAnnotations == null) {
+			return false;
+		}
+		for (AnnotationNode annotation : classNode.invisibleAnnotations) {
+			if (annotation.desc.equals("Lorg/spongepowered/asm/mixin/Mixin;")) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 
 

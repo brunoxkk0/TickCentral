@@ -61,9 +61,11 @@ public class EntityTransformer implements IClassTransformer {
 				return null;
 			}
 			ClassReader reader = new ClassReader(basicClass);
-			if (ClassSniffer.isInstanceOf(reader, ENTITY_CLASS_OBF) == false) {
+
+			if (ClassSniffer.hasMixinAnnotation(reader) || !ClassSniffer.isInstanceOf(reader, ENTITY_CLASS_OBF)) {
 				return basicClass;
 			}
+
 			boolean dirty = false;
 			String className = reader.getClassName();
 
